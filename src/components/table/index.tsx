@@ -7,11 +7,19 @@ import { SortMeta, TableProps } from '../../types';
 import { SortOrder } from '../../utils/constants';
 import { H2 } from '../Headers';
 import Filters from './Filters';
+import Pagination from './Pagination';
 
 const Table: React.FC<TableProps> = ({
     data: _data,
+    currentPage: _currentPage = 1,
+    onPageChange,
+    rowsPerPage: _rowsPerPage = 1,
+    onRowsPerPageChange,
+    totalRows = 1,
 }) => {
     const [data, setData] = useState(_data);
+    const [currentPage, setCurrentPage] = useState(_currentPage);
+    const [rowsPerPage, setRowPerPage] = useState<number>(_rowsPerPage);
 
     const [filters, setFilters] = useState<{
         filterColumn: string;
@@ -34,6 +42,20 @@ const Table: React.FC<TableProps> = ({
             });
         }
     }, [_data, filters]);
+
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+            onPageChange && onPageChange(newPage);
+        }
+    };
+
+    const handleRowPerPageChange = (newRow: number) => {
+        setRowPerPage(newRow);
+        onRowsPerPageChange && onRowsPerPageChange(newRow);
+    };
 
     const handleSort = (column: string) => {
         if (sortMeta.column === column) {
@@ -85,19 +107,23 @@ const Table: React.FC<TableProps> = ({
                     </tr>
                 </TableHeader>
                 <TableBody>
-                    {
-                        data.data.map((record, index) => (
-                            <TableRow key={`table-row-index-${index}`}>
-                                {data.columnsMetadata.map((column) => (
-                                    <TableCell key={`data-column-${column.key}-row-${index}`}>
-                                        {record[column.key].renderValue}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))
-                    }
+                    {data.data.map((record, index) => (
+                        <TableRow key={`table-row-index-${index}`}>
+                            {data.columnsMetadata.map((column) => (
+                                <TableCell key={`data-column-${column.key}-row-${index}`}>
+                                    {record[column.key].renderValue}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
                 </TableBody>
             </StyledTable>
+            <Pagination
+                onChangeRowsPerPage={handleRowPerPageChange}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                changePage={handlePageChange}
+            />
         </TableContainer>
     );
 };

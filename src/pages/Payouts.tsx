@@ -5,6 +5,7 @@ import Chip from '../components/Chip';
 import { H1 } from '../components/Headers';
 import Table from '../components/table';
 import { FormattedRecords } from '../types';
+import { ROWS_PER_PAGE } from '../utils/constants';
 import { getFormattedDate } from '../utils/getFormattedDate';
 
 const PayoutContainer = styled.div`
@@ -68,7 +69,7 @@ export const getFormattedData = (data: Record<string, string>[]): FormattedRecor
 
 function Payouts() {
     const [isTableLoading, setIsTableLoading] = useState(false);
-    const [rowsPerPage, setRowPerPage] = useState(5);
+    const [rowsPerPage, setRowPerPage] = useState(ROWS_PER_PAGE);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
 

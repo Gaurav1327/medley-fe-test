@@ -39,3 +39,10 @@ export interface SortMeta {
     column: string | null;
     order: SortOrder;
 }
+
+export interface PaginationProps {
+    currentPage: number;
+    totalPages: number;
+    changePage: (page: number) => void;
+    onChangeRowsPerPage: (rowsPerPage: number) => void;
+}
