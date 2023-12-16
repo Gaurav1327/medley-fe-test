@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "baseUrl": "./src/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "ESNext",
+    "jsx": "react",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "paths": {
+      "./src/*": ["*"]
+    }
+  },
+  "include": ["src"]
+}
