@@ -1,5 +1,14 @@
 import { ReactElement } from 'react';
 
+import { SortOrder } from './utils/constants';
+
+export interface DropdownProps {
+    values: any[];
+    onSelect: (value: any) => void;
+    emptyMessage?: string;
+    selectedValue?: any;
+}
+
 export interface FormattedRecords {
     tableTitle: string;
     filterValues?: Record<string, string[]>;
@@ -24,4 +33,9 @@ export interface TableProps {
     onPageChange?: (page: number) => void;
     onRowsPerPageChange?: (rowsPerPage: number) => void;
     isLoading?: boolean;
+}
+
+export interface SortMeta {
+    column: string | null;
+    order: SortOrder;
 }
