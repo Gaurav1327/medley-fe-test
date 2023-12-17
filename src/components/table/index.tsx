@@ -21,6 +21,7 @@ const TableMetadataContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 0.75rem;
 
     @media (max-width: 600px) {
         flex-direction: column;
@@ -45,7 +46,6 @@ const TableTitle = styled.div`
 const StyledTable = styled.table`
     border-collapse: collapse;
     width: 100%;
-    margin-top: 1rem;
     table-layout: fixed;
 
     @media screen and (max-width: 768px) {
@@ -108,7 +108,7 @@ const TableHeaderCellValues = styled.div<{
 const TableCell = styled.td<{ colorDarker?: boolean }>`
     color: ${(props) => (props.colorDarker ? '#1A1D1F' : '#6f767d')};
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: -0.00875rem;
     line-height: 1.5rem;
     padding: 1rem 1.5rem;

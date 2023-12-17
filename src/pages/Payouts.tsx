@@ -17,8 +17,8 @@ const PayoutContainer = styled.div`
     align-items: left;
     margin: auto;
     font-family: 'Inter', sans-serif;
-    width: 90%;
-    max-width: 90%;
+    width: 95%;
+    max-width: 95%;
     overflow-x: hidden;
 `;
 
@@ -27,6 +27,7 @@ const HeadContainer = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 1.5rem;
 
     @media (max-width: 600px) {
         flex-direction: column;
@@ -121,7 +122,7 @@ function Payouts() {
         const searchUser = async (username: string) => {
             try {
                 const res = await fetch(
-                    `https://theseus-staging.lithium.ventures/api/v1/analytics/tech-test/search?query=${username}`,
+                    `${process.env.REACT_BACKEND_API_URL}/search?query=${username}`,
                 );
                 const data = await res.json();
                 setSearchedData(data);
@@ -136,7 +137,7 @@ function Payouts() {
             try {
                 setIsTableLoading(true);
                 const res = await fetch(
-                    `https://theseus-staging.lithium.ventures/api/v1/analytics/tech-test/payouts?page=${currentPage}&limit=${rowsPerPage}`,
+                    `${process.env.REACT_BACKEND_API_URL}/payouts?page=${currentPage}&limit=${rowsPerPage}`,
                 );
                 const fetchedData = await res.json();
                 setData(fetchedData.data);
