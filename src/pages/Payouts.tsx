@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import Chip from '../components/Chip';
@@ -101,6 +101,22 @@ function Payouts() {
 
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     useEffect(() => {
         const searchUser = async (username: string) => {
             try {
@@ -148,15 +164,14 @@ function Payouts() {
 
     const handleSelectUser = (username: string) => {
         setData(searchedData.filter((d) => d.username === username));
+        setShowDropdown(false);
         setCurrentPage(1);
         setTotalRows(1);
     };
 
     const handleInputFocus = (focus: boolean) => {
         setIsFocused(focus);
-        setTimeout(() => {
-            setShowDropdown(focus);
-        }, 500);
+        if (focus) setShowDropdown(true);
     };
 
     const emptyMessage = () => {
@@ -173,7 +188,7 @@ function Payouts() {
         <PayoutContainer>
             <HeadContainer>
                 <H1>Payouts</H1>
-                <SearchContainer>
+                <SearchContainer ref={dropdownRef}>
                     <SearchBar
                         searchTerm={searchTerm}
                         setSearchTerm={handleSearchTerm}

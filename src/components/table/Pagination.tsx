@@ -9,7 +9,11 @@ const PaginationContainer = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-top: 1.25rem;
-    font-size: 0.875rem;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        gap: 1rem;
+    }
 `;
 
 const PaginationControls = styled.div`
@@ -42,7 +46,7 @@ const PageNumber = styled.span<{ isActive: boolean }>`
     font-weight: ${(props) => (props.isActive ? 'bold' : 'normal')};
     color: ${(props) => (props.isActive ? 'white' : '#1A1D1F')};
     transition: color 0.3s ease;
-    padding: 0.25rem;
+    padding: 0.25rem 0.5rem;
     background-color: ${(props) => (props.isActive ? '#999dff' : '#e4e4e4')};
     border-radius: 0.25rem;
 
@@ -51,9 +55,7 @@ const PageNumber = styled.span<{ isActive: boolean }>`
     }
 `;
 
-const PaginationInfo = styled.span`
-    margin-left: auto;
-`;
+const PaginationInfo = styled.span``;
 
 function Pagination({ currentPage, totalPages, changePage, onChangeRowsPerPage }: PaginationProps) {
     const paginationNumbers = getPaginationNumbers(currentPage, totalPages);
@@ -74,7 +76,11 @@ function Pagination({ currentPage, totalPages, changePage, onChangeRowsPerPage }
                             </PageNumber>
                         ))}
                         {i != paginationNumbers.length - 1 && (
-                            <PageNumber key={i} isActive={false}>
+                            <PageNumber
+                                onClick={() => changePage(numbers[numbers.length - 1] + 1)}
+                                key={i}
+                                isActive={false}
+                            >
                                 ...
                             </PageNumber>
                         )}

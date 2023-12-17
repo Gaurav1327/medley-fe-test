@@ -14,7 +14,6 @@ const SearchInput = styled.input`
     padding: 1rem 3rem;
     border: 0.0625rem solid #ccc;
     border-radius: 1.5rem;
-    font-size: 0.875rem;
     outline: none;
 
     &::placeholder {
@@ -30,7 +29,6 @@ const SearchIcon = styled.div<{ isFocused: boolean }>`
     position: absolute;
     left: 1rem;
     height: 50%;
-    font-size: 0.875rem;
     font-weight: bold;
     color: ${(props) => (props.isFocused ? '#999dff' : '#a8a8a8')};
     cursor: pointer;
@@ -40,7 +38,6 @@ const ActionIcon = styled.div`
     position: absolute;
     right: 1rem;
     height: 50%;
-    font-size: 0.875rem;
     color: #999dff;
     cursor: pointer;
 `;

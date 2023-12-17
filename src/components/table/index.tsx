@@ -75,7 +75,6 @@ const TableRow = styled.tr`
 const TableHeaderCell = styled.th`
     text-align: left;
     color: #6f767d;
-    font-family: 'Inter', Helvetica;
     font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: -0.0075rem;
@@ -108,7 +107,6 @@ const TableHeaderCellValues = styled.div<{
 
 const TableCell = styled.td<{ colorDarker?: boolean }>`
     color: ${(props) => (props.colorDarker ? '#1A1D1F' : '#6f767d')};
-    font-family: 'Inter', Helvetica;
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: -0.00875rem;

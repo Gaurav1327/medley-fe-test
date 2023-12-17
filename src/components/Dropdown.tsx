@@ -15,7 +15,6 @@ export const DropdownContainer = styled.div`
 export const DropdownItem = styled.button<{ selected?: boolean }>`
     color: black;
     padding: 1rem;
-    font-size: 0.875rem;
     text-align: left;
     border: 0.0625rem solid #f1f1f1;
     background-color: ${(props) => (props.selected ? '#999dff' : 'white')};
