@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Chip from '../components/Chip';
+import Dropdown from '../components/Dropdown';
 import { H1 } from '../components/Headers';
+import SearchBar from '../components/SearchBar';
 import Table from '../components/table';
+import { useDebounce } from '../hooks/useDebounce';
 import { FormattedRecords } from '../types';
 import { ROWS_PER_PAGE } from '../utils/constants';
 import { getFormattedDate } from '../utils/getFormattedDate';
@@ -28,6 +31,22 @@ const HeadContainer = styled.div`
     @media (max-width: 600px) {
         flex-direction: column;
     }
+`;
+
+const SearchContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    position: relative;
+`;
+
+const DropdownContainer = styled.div`
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 2;
 `;
 
 export const getFormattedData = (data: Record<string, string>[]): FormattedRecords => {
@@ -68,14 +87,35 @@ export const getFormattedData = (data: Record<string, string>[]): FormattedRecor
 };
 
 function Payouts() {
+    const [isLoading, setIsLoading] = useState(false);
     const [isTableLoading, setIsTableLoading] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchedData, setSearchedData] = useState<Record<string, string>[]>([]);
     const [rowsPerPage, setRowPerPage] = useState(ROWS_PER_PAGE);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
 
     const [data, setData] = useState<Record<string, string>[]>([]);
 
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
     useEffect(() => {
+        const searchUser = async (username: string) => {
+            try {
+                const res = await fetch(
+                    `https://theseus-staging.lithium.ventures/api/v1/analytics/tech-test/search?query=${username}`,
+                );
+                const data = await res.json();
+                setSearchedData(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         const fetchPaginatedData = async () => {
             try {
                 setIsTableLoading(true);
@@ -92,13 +132,65 @@ function Payouts() {
             }
         };
 
-        fetchPaginatedData();
-    }, [currentPage, rowsPerPage]);
+        if (debouncedSearchTerm === '') {
+            fetchPaginatedData();
+            setSearchedData([]);
+        } else {
+            searchUser(debouncedSearchTerm);
+        }
+    }, [debouncedSearchTerm, currentPage, rowsPerPage]);
+
+    const handleSearchTerm = (value: string) => {
+        if (value != '') setIsLoading(true);
+        else setIsLoading(false);
+        setSearchTerm(value);
+    };
+
+    const handleSelectUser = (username: string) => {
+        setData(searchedData.filter((d) => d.username === username));
+        setCurrentPage(1);
+        setTotalRows(1);
+    };
+
+    const handleInputFocus = (focus: boolean) => {
+        setIsFocused(focus);
+        setTimeout(() => {
+            setShowDropdown(focus);
+        }, 500);
+    };
+
+    const emptyMessage = () => {
+        if (searchTerm !== '' && isLoading) {
+            return `Searching for ${searchTerm}...`;
+        } else if (searchTerm !== '' && !isLoading) {
+            return `No results found for ${searchTerm}`;
+        } else if (searchTerm === '') {
+            return 'Try searching for usernames';
+        }
+    };
 
     return (
         <PayoutContainer>
             <HeadContainer>
                 <H1>Payouts</H1>
+                <SearchContainer>
+                    <SearchBar
+                        searchTerm={searchTerm}
+                        setSearchTerm={handleSearchTerm}
+                        isLoading={isLoading}
+                        isFocused={isFocused}
+                        setIsFocused={handleInputFocus}
+                    />
+                    {showDropdown && (
+                        <DropdownContainer>
+                            <Dropdown
+                                onSelect={(value) => handleSelectUser(value)}
+                                emptyMessage={emptyMessage()}
+                                values={searchedData.map((d) => d.username)}
+                            />
+                        </DropdownContainer>
+                    )}
+                </SearchContainer>
             </HeadContainer>
             <Table
                 data={getFormattedData(data)}

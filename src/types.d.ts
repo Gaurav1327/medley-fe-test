@@ -9,6 +9,14 @@ export interface DropdownProps {
     selectedValue?: any;
 }
 
+export interface SearchBarProps {
+    searchTerm: string;
+    setSearchTerm: (searchTerm: string) => void;
+    isLoading: boolean;
+    isFocused: boolean;
+    setIsFocused: (isFocused: boolean) => void;
+}
+
 export interface FormattedRecords {
     tableTitle: string;
     filterValues?: Record<string, string[]>;
