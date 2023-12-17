@@ -74,7 +74,8 @@ function Filters({ filters, filterValues, setFilters }: FiltersProps) {
             {Object.keys(filterValues).map((filterKey) => (
                 <FilterBox key={`filter-item-${filterKey}`}>
                     <Filter onClick={() => handleFilterDropdown(filterKey)}>
-                        {filterKey}
+                        <span className='material-icons'>tune</span>
+                            {filterKey}
                         <span className='material-icons'>expand_more</span>
                     </Filter>
                     {filterKey === showFilterDropDown && (

@@ -1,7 +1,7 @@
 {
   "name": "medley-test",
   "version": "1.0.0",
-  "description": "A basic react boilerplate using babel, typescript and webpack",
+  "description": "Frontend test for Medley",
   "main": "index.ts",
   "scripts": {
     "start": "webpack serve --port 3000 --mode development --open --hot",
@@ -13,11 +13,7 @@
     "check": "yarn prettier:check && yarn eslint:lint",
     "fix": "yarn prettier:write && yarn eslint:fix"
   },
-  "keywords": [
-    "react",
-    "boilerplate"
-  ],
-  "author": "",
+  "author": "Gaurav Dhalla",
   "dependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
