@@ -1,8 +1,11 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import * as React from 'react';
-import { render } from 'react-dom';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 import AppRouter from './Routing';
 
-render(<AppRouter />, document.getElementById('root'));
+const container = document.getElementById('app');
+const root = createRoot(container);
+
+root.render(<AppRouter />);
