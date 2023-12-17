@@ -1,6 +1,7 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import React, { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import styled from 'styled-components';
 
 import { SortMeta, TableProps } from '../../types';
@@ -8,125 +9,6 @@ import { SortOrder } from '../../utils/constants';
 import { H2 } from '../Headers';
 import Filters from './Filters';
 import Pagination from './Pagination';
-
-const Table: React.FC<TableProps> = ({
-    data: _data,
-    currentPage: _currentPage = 1,
-    onPageChange,
-    rowsPerPage: _rowsPerPage = 1,
-    onRowsPerPageChange,
-    totalRows = 1,
-}) => {
-    const [data, setData] = useState(_data);
-    const [currentPage, setCurrentPage] = useState(_currentPage);
-    const [rowsPerPage, setRowPerPage] = useState<number>(_rowsPerPage);
-
-    const [filters, setFilters] = useState<{
-        filterColumn: string;
-        filterValue: any;
-    } | null>(null);
-
-    const [sortMeta, setSortMeta] = useState<SortMeta>({
-        column: null,
-        order: SortOrder.ASC,
-    });
-
-    useEffect(() => {
-        if (filters == null) {
-            setData(_data);
-        } else {
-            console.log('filtering', _data, filters);
-            setData({
-                ..._data,
-                data: _data.data.filter((record) => record[filters.filterColumn].value == filters.filterValue),
-            });
-        }
-    }, [_data, filters]);
-
-    const totalPages = Math.ceil(totalRows / rowsPerPage);
-
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-            onPageChange && onPageChange(newPage);
-        }
-    };
-
-    const handleRowPerPageChange = (newRow: number) => {
-        setRowPerPage(newRow);
-        onRowsPerPageChange && onRowsPerPageChange(newRow);
-    };
-
-    const handleSort = (column: string) => {
-        if (sortMeta.column === column) {
-            setSortMeta((prev) => {
-                if (prev.order === SortOrder.ASC) {
-                    return { ...prev, order: SortOrder.DESC };
-                } else if (prev.order === SortOrder.DESC) {
-                    return { column: null, order: SortOrder.ASC };
-                }
-            });
-        } else {
-            setSortMeta({ column, order: SortOrder.ASC });
-        }
-    };
-
-    if (sortMeta?.column) {
-        data.data.sort((a, b) => {
-            if (a[sortMeta.column].value < b[sortMeta.column].value) return sortMeta.order === SortOrder.ASC ? -1 : 1;
-            if (a[sortMeta.column].value > b[sortMeta.column].value) return sortMeta.order === SortOrder.ASC ? 1 : -1;
-            return 0;
-        });
-    }
-
-    return (
-        <TableContainer>
-            <TableMetadataContainer>
-                <TableTitle>
-                    <div className='tag' />
-                    <H2>{data.tableTitle}</H2>
-                </TableTitle>
-                {data?.filterValues && (
-                    <Filters filterValues={data?.filterValues} filters={filters} setFilters={setFilters} />
-                )}
-            </TableMetadataContainer>
-            <StyledTable>
-                <TableHeader>
-                    <tr>
-                        {data.columnsMetadata.map((column) => (
-                            <TableHeaderCell key={column.key}>
-                                <TableHeaderCellValues
-                                    onClick={() => handleSort(column.key)}
-                                    isSorted={sortMeta.column === column.key}
-                                >
-                                    <div>{column.displayName}</div>
-                                    <span>{sortMeta.order === SortOrder.ASC ? '↓' : '↑'}</span>
-                                </TableHeaderCellValues>
-                            </TableHeaderCell>
-                        ))}
-                    </tr>
-                </TableHeader>
-                <TableBody>
-                    {data.data.map((record, index) => (
-                        <TableRow key={`table-row-index-${index}`}>
-                            {data.columnsMetadata.map((column) => (
-                                <TableCell key={`data-column-${column.key}-row-${index}`}>
-                                    {record[column.key].renderValue}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </StyledTable>
-            <Pagination
-                onChangeRowsPerPage={handleRowPerPageChange}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                changePage={handlePageChange}
-            />
-        </TableContainer>
-    );
-};
 
 const TableContainer = styled.div`
     width: 98%;
@@ -239,5 +121,139 @@ const TableCell = styled.td<{ colorDarker?: boolean }>`
     white-space: nowrap;
     text-overflow: ellipsis;
 `;
+
+const Table: React.FC<TableProps> = ({
+    data: _data,
+    currentPage: _currentPage = 1,
+    onPageChange,
+    rowsPerPage: _rowsPerPage = 1,
+    onRowsPerPageChange,
+    totalRows = 1,
+    isLoading,
+}) => {
+    const [data, setData] = useState(_data);
+    const [currentPage, setCurrentPage] = useState(_currentPage);
+    const [rowsPerPage, setRowPerPage] = useState<number>(_rowsPerPage);
+
+    const [filters, setFilters] = useState<{
+        filterColumn: string;
+        filterValue: any;
+    } | null>(null);
+
+    const [sortMeta, setSortMeta] = useState<SortMeta>({
+        column: null,
+        order: SortOrder.ASC,
+    });
+
+    useEffect(() => {
+        if (filters == null) {
+            setData(_data);
+        } else {
+            console.log('filtering', _data, filters);
+            setData({
+                ..._data,
+                data: _data.data.filter((record) => record[filters.filterColumn].value == filters.filterValue),
+            });
+        }
+    }, [_data, filters]);
+
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+            onPageChange && onPageChange(newPage);
+        }
+    };
+
+    const handleRowPerPageChange = (newRow: number) => {
+        setRowPerPage(newRow);
+        onRowsPerPageChange && onRowsPerPageChange(newRow);
+    };
+
+    const handleSort = (column: string) => {
+        if (sortMeta.column === column) {
+            setSortMeta((prev) => {
+                if (prev.order === SortOrder.ASC) {
+                    return { ...prev, order: SortOrder.DESC };
+                } else if (prev.order === SortOrder.DESC) {
+                    return { column: null, order: SortOrder.ASC };
+                }
+            });
+        } else {
+            setSortMeta({ column, order: SortOrder.ASC });
+        }
+    };
+
+    if (sortMeta?.column) {
+        data.data.sort((a, b) => {
+            if (a[sortMeta.column].value < b[sortMeta.column].value) return sortMeta.order === SortOrder.ASC ? -1 : 1;
+            if (a[sortMeta.column].value > b[sortMeta.column].value) return sortMeta.order === SortOrder.ASC ? 1 : -1;
+            return 0;
+        });
+    }
+
+    return (
+        <TableContainer>
+            <TableMetadataContainer>
+                <TableTitle>
+                    <div className='tag' />
+                    <H2>{data.tableTitle}</H2>
+                </TableTitle>
+                {data?.filterValues && (
+                    <Filters filterValues={data?.filterValues} filters={filters} setFilters={setFilters} />
+                )}
+            </TableMetadataContainer>
+            <StyledTable>
+                <TableHeader>
+                    <tr>
+                        {data.columnsMetadata.map((column) => (
+                            <TableHeaderCell key={column.key}>
+                                <TableHeaderCellValues
+                                    onClick={() => handleSort(column.key)}
+                                    isSorted={sortMeta.column === column.key}
+                                >
+                                    <div>{column.displayName}</div>
+                                    <span>{sortMeta.order === SortOrder.ASC ? '↓' : '↑'}</span>
+                                </TableHeaderCellValues>
+                            </TableHeaderCell>
+                        ))}
+                    </tr>
+                </TableHeader>
+                <TableBody>
+                    {isLoading ? (
+                        <>
+                            {Array.from({ length: rowsPerPage }, (_, index) => (
+                                <TableRow key={`loading-row-index-${index}`}>
+                                    {data.columnsMetadata.map((c) => (
+                                        <TableCell key={`loading-column-${c.key}-row-${index}`}>
+                                            <Skeleton />
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </>
+                    ) : (
+                        data.data.map((record, index) => (
+                            <TableRow key={`table-row-index-${index}`}>
+                                {data.columnsMetadata.map((column) => (
+                                    <TableCell key={`data-column-${column.key}-row-${index}`}>
+                                        {record[column.key].renderValue}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </StyledTable>
+            <Pagination
+                onChangeRowsPerPage={handleRowPerPageChange}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                changePage={handlePageChange}
+            />
+        </TableContainer>
+    );
+};
 
 export default Table;
