@@ -6,6 +6,10 @@ export function getFormattedDate(dateAndTime: string) {
 
     const localDate = new Date(dateAndTime);
 
+    if (localDate.toString() === 'Invalid Date') {
+        return 'Invalid Date';
+    }
+
     const dayOfWeek = days[localDate.getDay()];
     const month = months[localDate.getMonth()];
     const day = localDate.getDate();
