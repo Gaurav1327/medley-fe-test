@@ -47,6 +47,9 @@ export interface FormattedRecords {
    
 - **Concern related to API** - As the per the response for `/payouts` API, we get a value `totalCount` in the metadata. I could not figure out what value actually it is, whether it is the total count of records or total number of pages. I tested for response of payouts/page=1001&limit=500 and it gave 500 records, which means that totalCount is neither total pages or records. For the sake of this test, I have assumed totoalCount to be the number of records and calculated pagination details as per that.
 
+## Demo Video
+https://vimeo.com/895945893
+
 ## How to run?
 - Clone the repository using `git clone https://github.com/Gaurav1327/medley-fe-test.git`
 - Change the directory `cd medley-fe-test`
